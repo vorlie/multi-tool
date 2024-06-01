@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorlie's home page</title>
+    <link rel="icon" type="image/png" href="https://you-all-have.no-friends.xyz/r/icon.png">
+</head>
+
+<body>
+    <div class="app">
+        <img class="icon" src="https://you-all-have.no-friends.xyz/r/icon.png">
+        <h1>Vorlie's tool home page</h1>
+        <div class="navbar">
+            <button class="navBtn" id="navBtn" onclick="window.location.href='http://127.0.0.1:6969'">Home</button>
+            <button class="navBtn" id="navBtn" onclick="window.location.href='http://127.0.0.1:6969/converter'">Image
+                Converter</button>
+            <button class="navBtn" id="navBtn2" onclick="window.location.href='http://127.0.0.1:6969/merger'">FFmpeg
+                Merger</button>
+            <button class="navBtn" id="navBtn3"
+                onclick="window.location.href='http://127.0.0.1:6969/about'">About</button>
+        </div>
+        <div class="container">
+            <div class="column">
+                <p class="note">Note: This tool is still in development</p>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    :root {
+        --color: #C1BFFA;
+        --bg-color: #1E1443;
+        --column-bg-color: #3d278b;
+        --hover-color: #3d278b;
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --active-color: #7a76ff;
+        --color-darker: #1e1e30;
+        --font-size: 16px;
+        --roudness: 16px;
+        --roudness-small: 10px;
+    }
+
+    body {
+        margin: 0;
+        padding: 10px;
+        font-family: var(--font-family);
+        background-color: var(--bg-color);
+        color: var(--color);
+    }
+    .icon{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px auto;
+        background: var(--column-bg-color);
+        padding: 10px;
+        border-radius: var(--roudness);
+        width: 450px;
+    }
+
+    .actionBtn,
+    .navBtn {
+        padding: 10px;
+        font-size: var(--font-size);
+        border-radius: var(--roudness);
+        background: transparent;
+        border: 1px solid var(--color);
+        color: var(--color);
+        transition: 0.2s ease-in-out;
+    }
+
+    .actionBtn:hover,
+    .navBtn:hover {
+        background: var(--color);
+        color: var(--bg-color);
+        cursor: pointer;
+        filter: drop-shadow(0 0 2px var(--color));
+    }
+
+    .actionBtn:active,
+    .navBtn:active {
+        background: var(--active-color);
+        color: var(--bg-color);
+        border: 1px solid var(--active-color);
+        filter: drop-shadow(0 0 2px var(--active-color));
+    }
+</style>
+<script>
+
+</script>
+
+</html>

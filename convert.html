@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Format Converter</title>
+    <link rel="icon" type="image/png" href="https://you-all-have.no-friends.xyz/r/icon.png">
+</head>
+
+<body>
+    <div class="app">
+        <img class="icon" src="https://you-all-have.no-friends.xyz/r/icon.png">
+        <h1>Image Format Converter</h1>
+        <div class="navbar">
+            <button class="navBtn" id="navBtn" onclick="window.location.href='http://127.0.0.1:6969'">Home</button>
+            <button class="navBtn" id="navBtn" onclick="window.location.href='http://127.0.0.1:6969/converter'">Image
+                Converter</button>
+            <button class="navBtn" id="navBtn2" onclick="window.location.href='http://127.0.0.1:6969/merger'">FFmpeg
+                Merger</button>
+            <button class="navBtn" id="navBtn3"
+                onclick="window.location.href='http://127.0.0.1:6969/about'">About</button>
+        </div>
+        <div class="container">
+            <div class="column">
+                <input type="text" id="inputPath" placeholder="Enter the path of the image file">
+                <select id="outputFormat">
+                    <option value="" disabled selected>Select conversion format</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WebP</option>
+                    <option value="png">PNG</option>
+                    <option value="gif">GIF</option>
+                    <option value="tiff">TIFF</option>
+                    <option value="bmp">BMP</option>
+                </select>
+            </div>
+        </div>
+        <button class="actionBtn" id="convertBtn" onclick="convertFile()">Convert</button>
+    </div>
+    <script>
+        function convertFile() {
+            const inputPath = document.getElementById('inputPath').value;
+            const outputFormat = document.getElementById('outputFormat').value;
+
+            if (!inputPath || !outputFormat) {
+                alert('Please provide both the file path and the conversion format.');
+                return;
+            }
+
+            fetch('/convert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ input_path: inputPath, output_format: outputFormat })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(`Error: ${data.error}`);
+                    } else {
+                        alert(`Success: ${data.message}\nOutput File Path: ${data.output_file_path}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while converting the file.');
+                });
+        }
+    </script>
+</body>
+<style>
+    :root {
+        --color: #C1BFFA;
+        --bg-color: #1E1443;
+        --column-bg-color: #3d278b;
+        --hover-color: #3d278b;
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --active-color: #7a76ff;
+        --color-darker: #1e1e30;
+        --font-size: 16px;
+        --roudness: 16px;
+        --roudness-small: 10px;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--color);
+        font-family: var(--font-family);
+        margin: 0;
+        padding: 10px;
+    }
+    .icon{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px auto;
+        background: var(--column-bg-color);
+        padding: 10px;
+        border-radius: var(--roudness);
+        width: 450px;
+    }
+
+    .column input,
+    .column select {
+        margin: 10px auto;
+        padding: 10px;
+        font-size: var(--font-size);
+        border-radius: var(--roudness-small);
+        background: var(--column-bg-color);
+        border: 1px solid var(--color);
+        color: var(--color);
+        width: 90%;
+    }
+    .column input:focus,
+    .column select:focus {
+        outline: none;
+    }
+
+    .column button {
+        margin: 10px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        background: var(--color);
+        color: var(--bg-color);
+        border: none;
+        cursor: pointer;
+    }
+
+    .column button:hover {
+        background: var(--hover-color);
+    }
+
+    .actionBtn,
+    .navBtn {
+        padding: 10px;
+        font-size: var(--font-size);
+        border-radius: var(--roudness);
+        background: transparent;
+        border: 1px solid var(--color);
+        color: var(--color);
+        transition: 0.2s ease-in-out;
+    }
+
+    .actionBtn:hover,
+    .navBtn:hover {
+        background: var(--color);
+        color: var(--bg-color);
+        cursor: pointer;
+        filter: drop-shadow(0 0 2px var(--color));
+    }
+
+    .actionBtn:active,
+    .navBtn:active {
+        background: var(--active-color);
+        color: var(--bg-color);
+        border: 1px solid var(--active-color);
+        filter: drop-shadow(0 0 2px var(--active-color));
+    }
+</style>
+
+</html>
