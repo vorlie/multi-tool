@@ -2,10 +2,18 @@ from flask import Flask, request, jsonify, send_file, redirect
 from flask_cors import CORS
 import os, threading, webbrowser
 from PIL import Image
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 app = Flask(__name__)
 CORS(app)
     
+model_path = f'{os.getcwd()}/model'
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = AutoModelForCausalLM.from_pretrained(model_path)
+
+if tokenizer.pad_token_id is None:
+    tokenizer.pad_token_id = tokenizer.eos_token_id
+
 @app.route('/')
 def index():
     return send_file(f'index.html')
@@ -21,9 +29,38 @@ def merger():
 def about():
     return send_file(f'about.html')
 
+@app.route('/ai_chat')
+def ai_chat():
+    return send_file(f'chat.html')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_input = data['message']
+    
+    inputs = tokenizer(user_input, return_tensors='pt', padding=True, truncation=True)
+    outputs = model.generate(
+        inputs['input_ids'],
+        attention_mask=inputs['attention_mask'],
+        max_length=150,
+        num_return_sequences=1,
+        pad_token_id=tokenizer.eos_token_id,
+        temperature=0.2,
+        top_p=0.2,
+        top_k=50,
+        no_repeat_ngram_size=2,
+        do_sample=True
+    )
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+    # Remove user input from the response
+    response = response.replace(user_input, '').strip()
+    
+    return jsonify({"response": response})
 
 def convert_image(input_file_path, output_format):
     try:

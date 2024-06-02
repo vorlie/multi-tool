@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI</title>
+    <link rel="icon" type="image/png" href="https://you-all-have.no-friends.xyz/r/icon.png">
+</head>
+<body>
+    <div class="app">
+        <img class="icon" src="https://you-all-have.no-friends.xyz/r/icon.png">
+        <h1>AI Chat</h1>
+        <div class="navbar">
+            <button class="navBtn" id="navBtn" onclick="window.location.href='/'">Home</button>
+            <button class="navBtn" id="navBtn" onclick="window.location.href='/converter'">Image Converter</button>
+            <button class="navBtn" id="navBtn2" onclick="window.location.href='/merger'">FFmpeg Merger</button>
+            <button class="navBtn" id="navBtn4" onclick="window.location.href='/ai_chat'">AI Chat</button>
+            <button class="navBtn" id="navBtn3" onclick="window.location.href='/about'">About</button>
+        </div>
+        <div class="chat-box">
+            <div class="chat-messages" id="chatMessages"></div>
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type a message...">
+            <button class="actionBtn" onclick="sendMessage()">Send</button>
+            <button class="actionBtn" onclick="clearInput()">Clear Input Field</button>
+        </div>
+        <div class="footer">
+            <p>Model used: <a class="link" href="https://huggingface.co/openai-community/gpt2">OpenAI GPT-2</a>.<br>I won't be like uh, making it a ChatGPT clone, but it should be fine.<br>And uhh, it can say weird things sometimes.<br>If you refresh the page, it will clear the chat.</p>
+        </div>
+    </div>
+</body>
+<style>
+    :root {
+        --color: #C1BFFA;
+        --bg-color: #1E1443;
+        --column-bg-color: #3d278b;
+        --hover-color: #3d278b;
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --active-color: #7a76ff;
+        --color-darker: #1e1e30;
+        --font-size: 16px;
+        --roudness: 16px;
+        --roudness-small: 10px;
+        --color-user: #C1BFFA;
+        --color-ai: #7a76ff;
+    }
+    .icon{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    body {
+        background-color: var(--bg-color);
+        color: var(--color);
+        font-family: var(--font-family);
+        margin: 0;
+        padding: 10px;
+    }
+    .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+    .link{
+        color: var(--active-color);
+        text-decoration: none;
+        transition: 0.2s ease-in-out;
+    }
+    .link:hover{
+        color: var(--hover-color-2);
+        text-decoration: underline;
+    }
+    .footer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px auto;
+        background: var(--column-bg-color);
+        padding: 10px;
+        border-radius: var(--roudness);
+        width: 100%;
+        max-width: 600px;
+    }
+    .chat-box {
+        width: 100%;
+        max-width: 600px;
+        margin: 15px 0 0 0;
+        padding: 10px;
+        border-radius: var(--roudness);
+        background-color: var(--column-bg-color);
+    }
+    .chat-input {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin: 10px 0;
+        font-size: var(--font-size);
+        border-radius: var(--roudness-small);
+        background: transparent;
+        border: 1px solid var(--color);
+        color: var(--color);
+    }
+    .chat-input:focus{
+        outline: none;
+    }
+    .chat-messages {
+        margin: 10px 0;
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid var(--color);
+        padding: 10px;
+        border-radius: var(--roudness);
+        background-color: var(--bg-color);
+    }
+    .message {
+        padding: 5px;
+        margin: 5px 0;
+    }
+    .message.user {
+        text-align: right;
+        background-color: var(--color-user);
+    }
+    .message.ai {
+        text-align: left;
+        background-color: var(--color-ai);
+    }
+    
+    .actionBtn,
+    .navBtn {
+        padding: 10px;
+        font-size: var(--font-size);
+        border-radius: var(--roudness);
+        background: transparent;
+        border: 1px solid var(--color);
+        color: var(--color);
+        transition: 0.2s ease-in-out;
+    }
+
+    .actionBtn:hover,
+    .navBtn:hover {
+        background: var(--color);
+        color: var(--bg-color);
+        cursor: pointer;
+        filter: drop-shadow(0 0 2px var(--color));
+    }
+
+    .actionBtn:active,
+    .navBtn:active {
+        background: var(--active-color);
+        color: var(--bg-color);
+        border: 1px solid var(--active-color);
+        filter: drop-shadow(0 0 2px var(--active-color));
+    }
+</style>
+<script>
+function clearInput() {
+    document.getElementById('chatInput').value = '';
+}
+async function sendMessage() {
+    const userInput = document.getElementById('chatInput').value;
+    if (!userInput.trim()) return;
+
+    const chatBox = document.getElementById('chatMessages');
+    
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user-message';
+    userMessage.textContent = `USER: ${userInput}`;
+    chatBox.appendChild(userMessage);
+
+    const response = await fetch('/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userInput })
+    });
+
+
+    const data = await response.json();
+    const aiMessage = document.createElement('div');
+    aiMessage.className = 'message ai-message';
+    aiMessage.textContent = `AI: ${data.response}`;
+    chatBox.appendChild(aiMessage);
+}
+</script>
+</html>
